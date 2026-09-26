@@ -1,0 +1,613 @@
+{
+  "clinvar_train_excluded": {
+    "n": 1194,
+    "per_category": {
+      "missense": 435,
+      "intronic": 409,
+      "synonymous": 114,
+      "LoF": 111,
+      "splice": 53,
+      "other": 46,
+      "non-coding": 26
+    }
+  },
+  "clinvar_train": {
+    "n": 7577,
+    "per_category": {
+      "intronic": 3265,
+      "missense": 1565,
+      "LoF": 851,
+      "synonymous": 734,
+      "splice": 527,
+      "other": 467,
+      "non-coding": 168
+    },
+    "excluded_keys": "review_round1/train_exclude_keys.txt",
+    "alphagenome_sources": [
+      "benchmark_ag_features_quantile.npz"
+    ],
+    "alphagenome_missing": 0,
+    "alphagenome_layers": [
+      "raw",
+      "quantile"
+    ],
+    "alphagenome_mb": 94.2,
+    "block:borzoi": {
+      "shape": [
+        7577,
+        7611
+      ],
+      "coverage": 0.997,
+      "mb": 209.0,
+      "sources": [
+        "borzoi_log2fc_shard0.npz",
+        "borzoi_log2fc_shard1.npz"
+      ]
+    },
+    "block:dnabert2": {
+      "shape": [
+        7577,
+        768
+      ],
+      "coverage": 1.0,
+      "mb": 20.5,
+      "sources": [
+        "benchmark_dnabert2_scores.npz",
+        "missense_emb_dnabert2.npz"
+      ]
+    },
+    "block:ntv2": {
+      "shape": [
+        7577,
+        1024
+      ],
+      "coverage": 1.0,
+      "mb": 27.7,
+      "sources": [
+        "benchmark_nt_scores.npz",
+        "missense_emb_nt.npz"
+      ]
+    },
+    "block:hyenadna": {
+      "shape": [
+        7577,
+        256
+      ],
+      "coverage": 1.0,
+      "mb": 5.9,
+      "sources": [
+        "benchmark_hyenadna_scores.npz",
+        "missense_emb_hyenadna.npz"
+      ]
+    },
+    "block:grover": {
+      "shape": [
+        7577,
+        768
+      ],
+      "coverage": 1.0,
+      "mb": 19.7,
+      "sources": [
+        "benchmark_grover_scores.npz",
+        "missense_emb_grover.npz"
+      ]
+    },
+    "block:caduceus": {
+      "shape": [
+        7577,
+        256
+      ],
+      "coverage": 1.0,
+      "mb": 6.6,
+      "sources": [
+        "benchmark_caduceus_scores.npz",
+        "missense_emb_caduceus.npz"
+      ]
+    },
+    "score:dnabert2": "benchmark_dnabert2_scores.npz[dnabert2_emb_dist] POSITIONAL against 12118 rows + missense_emb_dnabert2.npz[scores] POSITIONAL against 3578 rows",
+    "score:ntv2": "benchmark_nt_scores.npz[nt_emb_dist] POSITIONAL against 12118 rows + missense_emb_nt.npz[scores] POSITIONAL against 3578 rows",
+    "score:hyenadna": "benchmark_hyenadna_scores.npz[hyenadna_emb_dist] POSITIONAL against 12118 rows + missense_emb_hyenadna.npz[scores] POSITIONAL against 3578 rows",
+    "score:grover": "benchmark_grover_scores.npz[grover_emb_dist] POSITIONAL against 12118 rows + missense_emb_grover.npz[scores] POSITIONAL against 3578 rows",
+    "score:caduceus": "benchmark_caduceus_scores.npz[caduceus_emb_dist] POSITIONAL against 12118 rows + missense_emb_caduceus.npz[scores] POSITIONAL against 3578 rows",
+    "score:borzoi": "L2 norm of borzoi_log2fc_shard[01].npz[log2fc] (7,577 covered)",
+    "score:gpnmsa": "benchmark_gpnmsa_scores.npz[gpnmsa_score] keyed (+5975); missense_temporal_gpnmsa_scores.npz[gpnmsa_score] keyed (+1565)",
+    "score:evo2": "benchmark_evo2_scores.npz[evo2_llr] keyed (+6011); missense_temporal_evo2_scores.npz[evo2_llr] keyed (+1565)",
+    "score:evo2_1b": "benchmark_evo2_1b_scores.npz[evo2_llr] keyed (+6011); missense_temporal_evo2_1b_scores.npz[evo2_llr] keyed (+1565)",
+    "score:cadd": "benchmark_cadd_scores.npz[cadd_phred] keyed (+5975); missense_temporal_cadd_scores.npz[cadd_phred] keyed (+1565)",
+    "score:phylop": "benchmark_bigwig_scores.npz[phylop100_bw] keyed (+6011); missense_temporal_bigwig_scores.npz[phylop100_bw] keyed (+1565)",
+    "score:phastcons": "benchmark_bigwig_scores.npz[phastcons100_bw] keyed (+6011); missense_temporal_bigwig_scores.npz[phastcons100_bw] keyed (+1565)",
+    "score:gerp": "gerp_genome_wide_benchmark.npz[gerp_rs] keyed (+6011); gerp_genome_wide_missense.npz[gerp_rs] keyed (+1564)",
+    "score:dann": "dann_scores_benchmark.npz[dann_score] keyed (+5964); dann_scores_missense.npz[dann_score] keyed (+1559)",
+    "score:spliceai": "benchmark_spliceai_scores.npz[spliceai_max] POSITIONAL against 12118 rows",
+    "score:revel": "missense_temporal_dedicated_scores.npz[revel_score] keyed",
+    "score:alphamissense": "missense_temporal_dedicated_scores.npz[alphamissense_score] keyed",
+    "score_coverage": {
+      "dnabert2": 1.0,
+      "ntv2": 1.0,
+      "hyenadna": 1.0,
+      "grover": 1.0,
+      "caduceus": 1.0,
+      "borzoi": 0.9969644978223572,
+      "gpnmsa": 0.9951168008446615,
+      "evo2": 0.9998680216444503,
+      "evo2_1b": 0.9998680216444503,
+      "cadd": 0.9951168008446615,
+      "phylop": 0.9998680216444503,
+      "phastcons": 0.9998680216444503,
+      "gerp": 0.9997360432889006,
+      "dann": 0.9928731688003167,
+      "spliceai": 0.7355153754784215,
+      "revel": 0.19229246403589811,
+      "alphamissense": 0.1963837930579385
+    }
+  },
+  "clinvar_test": {
+    "n": 40179,
+    "per_category": {
+      "intronic": 17138,
+      "missense": 11000,
+      "LoF": 4510,
+      "synonymous": 3058,
+      "splice": 2354,
+      "other": 1184,
+      "non-coding": 935
+    },
+    "alphagenome_sources": [
+      "ag_10to1/shard00.npz",
+      "ag_10to1/shard01.npz",
+      "ag_10to1/shard02.npz",
+      "ag_10to1/shard03.npz",
+      "ag_10to1/shard04.npz",
+      "ag_10to1/shard05.npz",
+      "ag_10to1/shard06.npz",
+      "ag_10to1/shard07.npz",
+      "benchmark_ag_features_quantile.npz"
+    ],
+    "alphagenome_missing": 0,
+    "alphagenome_layers": [
+      "raw"
+    ],
+    "alphagenome_mb": 335.1,
+    "score:gpnmsa": "review_round1/test_10to1_gpnmsa.npz[gpnmsa_score] keyed (+40134)",
+    "score:evo2": "review_round1/test_10to1_evo2_7b.npz[evo2_llr] keyed (+17820); benchmark_evo2_scores.npz[evo2_llr] keyed (+5160); missense_temporal_evo2_scores.npz[evo2_llr] keyed (+825); vus_reclass_evo2.npz[evo2_llr] keyed (+13020); conflicting_reclass_evo2.npz[evo2_llr] keyed (+3186); experiment_v2_evo2.npz[evo2_llr] keyed (+166)",
+    "score:evo2_1b": "benchmark_evo2_1b_scores.npz[evo2_llr] keyed (+5160); missense_temporal_evo2_1b_scores.npz[evo2_llr] keyed (+825); resources/ag_batch/review_round2/clinvar_plpblb_evo2_1b_scores.npz[evo2_llr] keyed (+34090, filled 2026-09-26 from data/clinvar_evo2_plpblb/evo2_scores_merged.tsv, job 16179, evo2_1b_base, 4,096 bp)",
+    "score:cadd": "unbalanced_baselines.npz[cadd_phred] keyed",
+    "score:phylop": "unbalanced_baselines.npz[phylop] keyed",
+    "score:phastcons": "unbalanced_baselines.npz[phastcons] keyed",
+    "score:gerp": "unbalanced_baselines.npz[gerp] keyed",
+    "score:dann": "unbalanced_baselines.npz[dann] keyed",
+    "score:revel": "unbalanced_dbnsfp.npz[revel] keyed",
+    "score:alphamissense": "unbalanced_dbnsfp.npz[alphamissense] keyed",
+    "score:spliceai": "unbalanced_spliceai.npz[spliceai_max] keyed",
+    "score_coverage": {
+      "gpnmsa": 0.9988800119465392,
+      "evo2": 0.9999502227531796,
+      "evo2_1b": 0.9974115831653352,
+      "cadd": 0.9988800119465392,
+      "phylop": 0.9999502227531796,
+      "phastcons": 0.9999502227531796,
+      "gerp": 0.9995768934020259,
+      "dann": 0.997511137658976,
+      "revel": 0.25401329052490107,
+      "alphamissense": 0.2662336046193285,
+      "spliceai": 0.9751362652131711
+    }
+  },
+  "external": {
+    "n": 37745,
+    "per_category": {
+      "missense": 11000,
+      "intronic": 10285,
+      "LoF": 8340,
+      "splice": 4446,
+      "other": 1319,
+      "synonymous": 1276,
+      "non-coding": 1079
+    },
+    "alphagenome_sources": [
+      "external_union_ag/shard00.npz",
+      "external_union_ag/shard01.npz",
+      "external_union_ag/shard02.npz",
+      "external_union_ag/shard03.npz",
+      "external_union_ag/shard04.npz",
+      "external_union_ag/shard05.npz",
+      "external_union_ag/shard06.npz",
+      "external_union_ag/shard07.npz",
+      "external_union_ag/shard08.npz",
+      "external_union_ag/shard09.npz",
+      "external_union_ag/shard10.npz",
+      "external_union_ag/shard11.npz"
+    ],
+    "alphagenome_missing": 0,
+    "alphagenome_layers": [
+      "raw"
+    ],
+    "alphagenome_mb": 313.4,
+    "score:gpnmsa": "review_round1/external_union_gpnmsa.npz[gpnmsa_score] keyed",
+    "score:evo2": "review_round1/external_union_evo2_7b.npz[evo2_llr] keyed",
+    "score:cadd": "review_round1/external_union_baselines.npz[cadd_phred] keyed",
+    "score:phylop": "review_round1/external_union_baselines.npz[phylop] keyed",
+    "score:phastcons": "review_round1/external_union_baselines.npz[phastcons] keyed",
+    "score:gerp": "review_round1/external_union_baselines.npz[gerp] keyed",
+    "score:dann": "review_round1/external_union_baselines.npz[dann] keyed",
+    "score:revel": "review_round1/external_union_dbnsfp.npz[revel] keyed",
+    "score:alphamissense": "review_round1/external_union_dbnsfp.npz[alphamissense] keyed",
+    "score:spliceai": "review_round1/external_union_spliceai.npz[spliceai_max] keyed",
+    "score_coverage": {
+      "gpnmsa": 0.9950986885680223,
+      "evo2": 0.9998940256987681,
+      "cadd": 0.9951251821433302,
+      "phylop": 1.0,
+      "phastcons": 1.0,
+      "gerp": 0.9990462312889125,
+      "dann": 0.9938005033779308,
+      "revel": 0.25648430255663,
+      "alphamissense": 0.26337263213670686,
+      "spliceai": 0.9790435819313816
+    }
+  },
+  "indel_train": {
+    "n": 6480,
+    "per_category": {
+      "in-frame": 2584,
+      "other": 1422,
+      "LoF": 1352,
+      "splice": 586,
+      "intronic": 436,
+      "non-coding": 100
+    },
+    "alphagenome_sources": [
+      "indel_ag_features.npz"
+    ],
+    "alphagenome_missing": 0,
+    "alphagenome_layers": [
+      "raw"
+    ],
+    "alphagenome_mb": 55.0,
+    "score:evo2": "indel_all_evo2_scores.npz[evo2_llr] keyed",
+    "score:msa_gap": "indel_all_msa_gap.pkl[msa_gap_score] keyed",
+    "score:cadd": "review_round1/internal_indel_cadd.npz[cadd_phred] keyed",
+    "score:phylop": "review_round1/internal_indel_conservation.npz[phylop] keyed",
+    "score:phastcons": "review_round1/internal_indel_conservation.npz[phastcons] keyed",
+    "score:gerp": "review_round1/internal_indel_conservation.npz[gerp] keyed",
+    "score:spliceai": "review_round1/internal_indel_spliceai.npz[spliceai_max] keyed",
+    "score_coverage": {
+      "evo2": 1.0,
+      "msa_gap": 1.0,
+      "cadd": 0.9972222222222222,
+      "phylop": 0.9998456790123457,
+      "phastcons": 0.9998456790123457,
+      "gerp": 1.0,
+      "spliceai": 0.8260802469135803
+    }
+  },
+  "indel_test": {
+    "n": 4428,
+    "per_category": {
+      "in-frame": 1972,
+      "LoF": 954,
+      "other": 564,
+      "intronic": 426,
+      "splice": 324,
+      "non-coding": 188
+    },
+    "alphagenome_sources": [
+      "indel_ag_features.npz"
+    ],
+    "alphagenome_missing": 0,
+    "alphagenome_layers": [
+      "raw"
+    ],
+    "alphagenome_mb": 37.8,
+    "score:evo2": "indel_all_evo2_scores.npz[evo2_llr] keyed",
+    "score:msa_gap": "indel_all_msa_gap.pkl[msa_gap_score] keyed",
+    "score:cadd": "review_round1/internal_indel_cadd.npz[cadd_phred] keyed",
+    "score:phylop": "review_round1/internal_indel_conservation.npz[phylop] keyed",
+    "score:phastcons": "review_round1/internal_indel_conservation.npz[phastcons] keyed",
+    "score:gerp": "review_round1/internal_indel_conservation.npz[gerp] keyed",
+    "score:spliceai": "review_round1/internal_indel_spliceai.npz[spliceai_max] keyed",
+    "score_coverage": {
+      "evo2": 1.0,
+      "msa_gap": 1.0,
+      "cadd": 0.9997741644083108,
+      "phylop": 0.999096657633243,
+      "phastcons": 0.999096657633243,
+      "gerp": 1.0,
+      "spliceai": 0.9110207768744354
+    }
+  },
+  "external_indel": {
+    "n": 14573,
+    "per_category": {
+      "LoF": 9713,
+      "in-frame": 2338,
+      "intronic": 1188,
+      "splice": 585,
+      "other": 463,
+      "non-coding": 286
+    },
+    "alphagenome_sources": [
+      "review_round1/external_indel_ag_v2/shard00.npz",
+      "review_round1/external_indel_ag_v2/shard01.npz",
+      "review_round1/external_indel_ag_v2/shard02.npz",
+      "review_round1/external_indel_ag_v2/shard03.npz",
+      "review_round1/external_indel_ag_v2/shard04.npz",
+      "review_round1/external_indel_ag_v2/shard05.npz",
+      "review_round1/external_indel_ag_v2/shard06.npz",
+      "review_round1/external_indel_ag_v2/shard07.npz",
+      "review_round1/external_indel_ag_v2/shard08.npz",
+      "review_round1/external_indel_ag_v2/shard09.npz",
+      "review_round1/external_indel_ag_v2/shard10.npz",
+      "review_round1/external_indel_ag_v2/shard11.npz"
+    ],
+    "alphagenome_missing": 0,
+    "alphagenome_layers": [
+      "raw"
+    ],
+    "alphagenome_mb": 122.3,
+    "score:evo2": "review_round1/external_indel_evo2_scores_v2.npz[evo2_llr] keyed",
+    "score:msa_gap": "review_round1/external_indel_msa_gap_v2.pkl[msa_gap_score] keyed",
+    "score:cadd": "review_round1/external_indel_cadd_v2.npz[cadd_phred] keyed",
+    "score:phylop": "review_round1/external_indel_conservation_v2.npz[phylop] keyed",
+    "score:phastcons": "review_round1/external_indel_conservation_v2.npz[phastcons] keyed",
+    "score:gerp": "review_round1/external_indel_conservation_v2.npz[gerp] keyed",
+    "score:spliceai": "review_round1/external_indel_spliceai_v2.npz[spliceai_max] keyed",
+    "score_coverage": {
+      "evo2": 1.0,
+      "msa_gap": 1.0,
+      "cadd": 1.0,
+      "phylop": 0.9998627598984423,
+      "phastcons": 0.9998627598984423,
+      "gerp": 1.0,
+      "spliceai": 0.9674054758800521
+    }
+  },
+  "reclass_vus": {
+    "n": 20171,
+    "per_category": {
+      "missense": 8618,
+      "synonymous": 6390,
+      "intronic": 4088,
+      "LoF": 562,
+      "splice": 411,
+      "non-coding": 68,
+      "other": 34
+    },
+    "alphagenome_sources": [
+      "vus_reclass_ag.npz"
+    ],
+    "alphagenome_feature_names": "benchmark_ag_features.npz (canonical order)",
+    "score:gpnmsa": "vus_reclass_gpnmsa.npz[gpnmsa_score] keyed",
+    "score:evo2": "vus_reclass_evo2.npz[evo2_llr] keyed",
+    "score:cadd": "vus_reclass_baselines.npz[cadd_phred] keyed",
+    "score:phylop": "vus_reclass_baselines.npz[phylop] keyed",
+    "score:phastcons": "vus_reclass_baselines.npz[phastcons] keyed",
+    "score:gerp": "vus_reclass_baselines.npz[gerp] keyed",
+    "score:dann": "vus_reclass_baselines.npz[dann] keyed",
+    "score_coverage": {
+      "gpnmsa": 0.9997025432551683,
+      "evo2": 0.9961826384413267,
+      "cadd": 0.9997025432551683,
+      "phylop": 0.9997025432551683,
+      "phastcons": 0.9997025432551683,
+      "gerp": 0.9997025432551683,
+      "dann": 0.9986118685241188
+    }
+  },
+  "reclass_conflicting": {
+    "n": 7259,
+    "per_category": {
+      "missense": 3698,
+      "synonymous": 1921,
+      "intronic": 1099,
+      "LoF": 320,
+      "splice": 166,
+      "non-coding": 29,
+      "other": 26
+    },
+    "alphagenome_sources": [
+      "conflicting_reclass_ag.npz"
+    ],
+    "alphagenome_feature_names": "benchmark_ag_features.npz (canonical order)",
+    "score:gpnmsa": "conflicting_reclass_gpnmsa.npz[gpnmsa_score] keyed",
+    "score:evo2": "conflicting_reclass_evo2.npz[evo2_llr] keyed",
+    "score:cadd": "conflicting_reclass_baselines.npz[cadd_phred] keyed",
+    "score:phylop": "conflicting_reclass_baselines.npz[phylop] keyed",
+    "score:phastcons": "conflicting_reclass_baselines.npz[phastcons] keyed",
+    "score:gerp": "conflicting_reclass_baselines.npz[gerp] keyed",
+    "score:dann": "conflicting_reclass_baselines.npz[dann] keyed",
+    "score_coverage": {
+      "gpnmsa": 0.9983468797355007,
+      "evo2": 0.8862102217936355,
+      "cadd": 0.9983468797355007,
+      "phylop": 0.9984846397575423,
+      "phastcons": 0.9984846397575423,
+      "gerp": 0.9984846397575423,
+      "dann": 0.9979335996693759
+    }
+  },
+  "clinvar_pre2023": {
+    "n": 8771,
+    "per_category": {
+      "intronic": 3674,
+      "missense": 2000,
+      "LoF": 962,
+      "synonymous": 848,
+      "splice": 580,
+      "other": 513,
+      "non-coding": 194
+    },
+    "alphagenome_sources": [
+      "benchmark_ag_features_quantile.npz"
+    ],
+    "alphagenome_missing": 0,
+    "alphagenome_layers": [
+      "raw"
+    ],
+    "alphagenome_mb": 73.8,
+    "block:borzoi": {
+      "shape": [
+        8771,
+        7611
+      ],
+      "coverage": 0.9968,
+      "mb": 242.0,
+      "sources": [
+        "borzoi_log2fc_shard0.npz",
+        "borzoi_log2fc_shard1.npz"
+      ]
+    },
+    "score:dnabert2": "benchmark_dnabert2_scores.npz[dnabert2_emb_dist] POSITIONAL against 12118 rows + missense_emb_dnabert2.npz[scores] POSITIONAL against 3578 rows",
+    "score:ntv2": "benchmark_nt_scores.npz[nt_emb_dist] POSITIONAL against 12118 rows + missense_emb_nt.npz[scores] POSITIONAL against 3578 rows",
+    "score:hyenadna": "benchmark_hyenadna_scores.npz[hyenadna_emb_dist] POSITIONAL against 12118 rows + missense_emb_hyenadna.npz[scores] POSITIONAL against 3578 rows",
+    "score:grover": "benchmark_grover_scores.npz[grover_emb_dist] POSITIONAL against 12118 rows + missense_emb_grover.npz[scores] POSITIONAL against 3578 rows",
+    "score:caduceus": "benchmark_caduceus_scores.npz[caduceus_emb_dist] POSITIONAL against 12118 rows + missense_emb_caduceus.npz[scores] POSITIONAL against 3578 rows",
+    "score:borzoi": "L2 norm of borzoi_log2fc_shard[01].npz[log2fc]",
+    "score:gpnmsa": "benchmark_gpnmsa_scores.npz[gpnmsa_score] keyed (+6734); missense_temporal_gpnmsa_scores.npz[gpnmsa_score] keyed (+2000)",
+    "score:evo2": "benchmark_evo2_scores.npz[evo2_llr] keyed (+6770); missense_temporal_evo2_scores.npz[evo2_llr] keyed (+2000)",
+    "score:evo2_1b": "benchmark_evo2_1b_scores.npz[evo2_llr] keyed (+6770); missense_temporal_evo2_1b_scores.npz[evo2_llr] keyed (+2000)",
+    "score:cadd": "benchmark_cadd_scores.npz[cadd_phred] keyed (+6734); missense_temporal_cadd_scores.npz[cadd_phred] keyed (+2000)",
+    "score:phylop": "benchmark_bigwig_scores.npz[phylop100_bw] keyed (+6770); missense_temporal_bigwig_scores.npz[phylop100_bw] keyed (+2000)",
+    "score:phastcons": "benchmark_bigwig_scores.npz[phastcons100_bw] keyed (+6770); missense_temporal_bigwig_scores.npz[phastcons100_bw] keyed (+2000)",
+    "score:gerp": "gerp_genome_wide_benchmark.npz[gerp_rs] keyed (+6770); gerp_genome_wide_missense.npz[gerp_rs] keyed (+1999)",
+    "score:dann": "dann_scores_benchmark.npz[dann_score] keyed (+6720); dann_scores_missense.npz[dann_score] keyed (+1994)",
+    "score:spliceai": "benchmark_spliceai_scores.npz[spliceai_max] POSITIONAL against 12118 rows",
+    "score:revel": "missense_temporal_dedicated_scores.npz[revel_score] keyed",
+    "score:alphamissense": "missense_temporal_dedicated_scores.npz[alphamissense_score] keyed",
+    "score_coverage": {
+      "dnabert2": 1.0,
+      "ntv2": 1.0,
+      "hyenadna": 1.0,
+      "grover": 1.0,
+      "caduceus": 1.0,
+      "borzoi": 0.9968076616121309,
+      "gpnmsa": 0.9957815528446016,
+      "evo2": 0.9998859879147189,
+      "evo2_1b": 0.9998859879147189,
+      "cadd": 0.9957815528446016,
+      "phylop": 0.9998859879147189,
+      "phastcons": 0.9998859879147189,
+      "gerp": 0.9997719758294379,
+      "dann": 0.9935013111389808,
+      "spliceai": 0.7179341010147076,
+      "revel": 0.2128605632197013,
+      "alphamissense": 0.2171930224603808
+    }
+  },
+  "reclass_vus_indel": {
+    "n": 1910,
+    "per_category": {
+      "LoF": 934,
+      "intronic": 564,
+      "other": 253,
+      "splice": 97,
+      "missense": 31,
+      "non-coding": 29,
+      "synonymous": 2
+    },
+    "alphagenome_sources": [
+      "vus_reclass_ag.npz"
+    ],
+    "score:evo2": "vus_reclass_evo2.npz[evo2_llr] keyed",
+    "score:msa_gap": "vus_reclass_gpnmsa_indel.npz[gpnmsa_score] keyed",
+    "score:cadd": "vus_reclass_baselines.npz[cadd_phred] keyed",
+    "score:phylop": "vus_reclass_baselines.npz[phylop] keyed",
+    "score:phastcons": "vus_reclass_baselines.npz[phastcons] keyed",
+    "score:gerp": "vus_reclass_baselines.npz[gerp] keyed",
+    "score_coverage": {
+      "evo2": 0.9858638743455498,
+      "msa_gap": 0.9984293193717277,
+      "cadd": 0.25863874345549737,
+      "phylop": 0.9984293193717277,
+      "phastcons": 0.9984293193717277,
+      "gerp": 0.9984293193717277
+    }
+  },
+  "reclass_conflicting_indel": {
+    "n": 643,
+    "per_category": {
+      "LoF": 288,
+      "intronic": 157,
+      "other": 124,
+      "splice": 46,
+      "non-coding": 19,
+      "missense": 8,
+      "synonymous": 1
+    },
+    "alphagenome_sources": [
+      "conflicting_reclass_ag.npz"
+    ],
+    "score:evo2": "conflicting_reclass_evo2.npz[evo2_llr] keyed",
+    "score:msa_gap": "conflicting_reclass_gpnmsa_indel.npz[gpnmsa_score] keyed",
+    "score:cadd": "conflicting_reclass_baselines.npz[cadd_phred] keyed",
+    "score:phylop": "conflicting_reclass_baselines.npz[phylop] keyed",
+    "score:phastcons": "conflicting_reclass_baselines.npz[phastcons] keyed",
+    "score:gerp": "conflicting_reclass_baselines.npz[gerp] keyed",
+    "score_coverage": {
+      "evo2": 0.8818040435458787,
+      "msa_gap": 1.0,
+      "cadd": 0.5738724727838258,
+      "phylop": 1.0,
+      "phastcons": 1.0,
+      "gerp": 1.0
+    }
+  },
+  "clinvar_screen10k": {
+    "n": 10000,
+    "per_category": {
+      "synonymous": 3340,
+      "intronic": 3211,
+      "missense": 1389,
+      "non-coding": 1107,
+      "LoF": 571,
+      "splice": 309,
+      "other": 73
+    },
+    "alphagenome_sources": [
+      "clinvar_annotated.feather"
+    ],
+    "alphagenome_missing": 0,
+    "block:borzoi": {
+      "shape": [
+        10000,
+        7611
+      ],
+      "coverage": 0.9967,
+      "mb": 272.6,
+      "sources": [
+        "borzoi_10k_shard0.npz",
+        "borzoi_10k_shard1.npz"
+      ]
+    },
+    "score:borzoi": "L2 norm of borzoi_10k_shard[01].npz[log2fc]",
+    "score:gpnmsa": "gpn_msa_score_10k.npz[scores] POSITIONAL against 10000 rows",
+    "score:evo2": "evo2_ll_8k_10k.npz[ll_scores] POSITIONAL against 10000 rows",
+    "score:cadd": "cadd_scores_10k.npz[scores] POSITIONAL against 10000 rows",
+    "score:phylop": "phylop_scores_10k.npz[scores] POSITIONAL against 10000 rows",
+    "score:phastcons": "phastcons_scores_10k.npz[scores] POSITIONAL against 10000 rows",
+    "score:dnabert2": "dnabert2_emb_10k.npz[scores] POSITIONAL against 10000 rows",
+    "score:ntv2": "nt_emb_10k.npz[scores] POSITIONAL against 10000 rows",
+    "score:hyenadna": "hyenadna_emb_10k.npz[scores] POSITIONAL against 10000 rows",
+    "score:grover": "grover_emb_10k.npz[scores] POSITIONAL against 10000 rows",
+    "score:caduceus": "caduceus_emb_10k.npz[scores] POSITIONAL against 10000 rows",
+    "score:ag_rf": "ag_rf_10k.npz[oof_scores] POSITIONAL against 10000 rows",
+    "score:dann": "dann_scores_10k.npz[dann_score] keyed",
+    "score:gerp": "gerp_scores_10k.npz[scores] keyed",
+    "score_coverage": {
+      "borzoi": 0.9967,
+      "gpnmsa": 1.0,
+      "evo2": 1.0,
+      "cadd": 1.0,
+      "phylop": 1.0,
+      "phastcons": 1.0,
+      "dnabert2": 1.0,
+      "ntv2": 1.0,
+      "hyenadna": 1.0,
+      "grover": 1.0,
+      "caduceus": 1.0,
+      "ag_rf": 1.0,
+      "dann": 0.9989,
+      "gerp": 0.9998
+    }
+  }
+}

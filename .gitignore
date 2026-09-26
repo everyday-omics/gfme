@@ -1,0 +1,17 @@
+results/
+_scratch/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+
+# The AlphaGenome matrices and foundation-model blocks. Five files exceed GitHub's 100 MB
+# per-file cap, so they ship as a Release asset or as <100 MB shards rather than in the tree.
+# See data/README.md. Set GFME_DATA to point at them wherever they are kept.
+data/alphagenome/
+data/blocks/
+catboost_info/
+
+# Job output. The scripts print what they did; the cluster logs are not part of the record.
+logs/
+*.log

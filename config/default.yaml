@@ -1,0 +1,248 @@
+# GFME — every constant the analysis depends on.
+#
+# Nothing in gfme/ or scripts/ hardcodes a value that appears here. A run is fully described by
+# this file plus the script name, and results are written under results/<step>/ keyed by a hash
+# of the settings that produced them.
+
+seed: 42
+
+# --------------------------------------------------------------------------------------------
+# Consequence categories
+# --------------------------------------------------------------------------------------------
+# Seven for SNVs. `missense` is one of them, on the same footing as the rest: it is not a
+# separate benchmark, a separate file or a separate code path.
+categories:
+  snv: [intronic, synonymous, non-coding, splice, LoF, other, missense]
+  # Indels cannot be missense and gain in-frame.
+  indel: [in-frame, LoF, other, splice, intronic, non-coding]
+
+# The numeric consequence encoding fed to the classifier as a feature (`cons_num`).
+# Index into the category list; an unrecognised category is -1 and must not occur.
+consequence_encoding: index
+
+# --------------------------------------------------------------------------------------------
+# AlphaGenome representation
+# --------------------------------------------------------------------------------------------
+# AG-747 = 19 per-scorer columns + 728 per-biosample columns, both signed max over raw
+# AlphaGenome output. Selected by the nested search in scripts/02_representation.py.
+# `arms` lists everything that search compares; `selected` names the one the rest of the
+# pipeline uses. Changing `selected` changes every downstream number, which is the point.
+alphagenome:
+  n_raw_columns: 2536
+  selected: raw_activity_max
+  # Scorers whose per-biosample columns make up the 728-column block.
+  activity_scorers:
+    - atac_center_active_sum
+    - cage_center_active_sum
+    - dnase_center_active_sum
+    - histone_center_active_sum
+    - procap_center_active_sum
+    - tf_center_active_sum
+    - rnaseq_gene_active
+  arms:
+    raw_activity_max:      {scorer: raw, biosample: raw,      scorers: activity, agg: max,  label: "19+728, raw, activity, max"}
+    raw_activity_mean:     {scorer: raw, biosample: raw,      scorers: activity, agg: mean, label: "19+728, raw, activity, mean instead of max"}
+    quantile_activity_max: {scorer: raw, biosample: quantile, scorers: activity, agg: max,  label: "19+728, AlphaGenome quantile, activity, max"}
+    raw_all_max:           {scorer: raw, biosample: raw,      scorers: all,      agg: max,  label: "19+728, raw, all 19 scorers, max"}
+    raw_change_max:        {scorer: raw, biosample: raw,      scorers: change,   agg: max,  label: "19+728, raw, change scorers only, max"}
+    scorer_only:           {scorer: raw, biosample: none,     scorers: activity, agg: max,  label: "Scorer block only (19), raw"}
+    biosample_only:        {scorer: none, biosample: raw,     scorers: activity, agg: max,  label: "Biosample block only (728), raw, activity, max"}
+    row_normalised:        {scorer: raw, biosample: raw,      scorers: activity, agg: max,  normalise: row, label: "19+728, biosample block row-normalised (tissue pattern only)"}
+    biosample_mean_only:   {scorer: raw, biosample: raw,      scorers: activity, agg: max,  collapse: mean, label: "19+1, biosample block collapsed to its row mean (level only)"}
+    none:                  {scorer: none, biosample: none,    scorers: all,      agg: max,  label: "No aggregation: all 2,536 raw columns"}
+
+# --------------------------------------------------------------------------------------------
+# Side features — the non-AlphaGenome inputs to the ensemble
+# --------------------------------------------------------------------------------------------
+# `negate` marks scores distributed as higher-is-more-benign. Tree models are sign invariant,
+# but the sign is part of the published feature contract and is asserted, not assumed.
+side_features:
+  snv:   [{name: gpnmsa, negate: true}, {name: evo2, negate: true}]
+  indel: [{name: evo2, negate: true}, {name: msa_gap, negate: false}, {name: indel_size, negate: false}]
+
+# Feature block order. CatBoost is deterministic for a fixed column order but its fit changes
+# when columns are permuted, so the order is part of the contract and is asserted at every build.
+block_order: [alphagenome, side, consequence]
+
+# --------------------------------------------------------------------------------------------
+# Foundation models in the combination search (S4.2)
+# --------------------------------------------------------------------------------------------
+# Nine models, so the exhaustive search is 2^9 - 1 = 511 subsets.
+foundation_models: [ag, gpnmsa, evo2, dnabert2, ntv2, hyenadna, grover, caduceus, borzoi]
+selected_combination: [ag, gpnmsa, evo2]
+
+# --------------------------------------------------------------------------------------------
+# Cross-validation
+# --------------------------------------------------------------------------------------------
+cv:
+  outer_k: 5
+  inner_k: 5
+  # The out-of-fold scheme used for the training-set OOF predictions that S7 calibrates on.
+  oof_k: 5
+  stratify_by: [label, consequence]
+
+# --------------------------------------------------------------------------------------------
+# The locked classifier
+# --------------------------------------------------------------------------------------------
+model:
+  family: catboost
+  hyperparameters:
+    iterations: 1500
+    depth: 10
+    learning_rate: 0.03
+    subsample: 1.0
+    colsample_bylevel: 0.5
+    loss_function: Logloss
+    eval_metric: AUC
+    random_seed: 42
+    verbose: 0
+  # Category sample weighting won the S4.3 comparison, which ran at an untuned configuration.
+  # At the tuned configuration selected in S4.4 it no longer helps: on the training out-of-fold
+  # macro it costs 0.0016 under the selected representation and gains 0.0003 under the runner-up,
+  # both far inside the metric's standard error. It is therefore off, which is also what the
+  # published models were fitted with. `by_category` turns it on.
+  sample_weights: none
+  # Fits are reproducible only if thread_count is fixed. Verified bit-identical at 1/2/4/8.
+  thread_count: 4
+
+# The grid searched in S4.4.
+hyperparameter_grid:
+  iterations: [500, 1000, 1500]
+  depth: [4, 6, 8, 10]
+  learning_rate: [0.03, 0.05, 0.1]
+  subsample: [1.0]
+  colsample_bylevel: [0.5]
+
+# --------------------------------------------------------------------------------------------
+# Dataset construction
+# --------------------------------------------------------------------------------------------
+datasets:
+  clinvar:
+    release: "2026-02-01"        # ##fileDate in the VCF header
+    min_review_stars: 1
+    temporal_split_year: 2023    # train = submitted and classified before 2023, test = 2023+
+    train_balance: 1             # 1:1 pathogenic:benign within each category
+    test_majority_ratio: 10      # 10:1 majority:minority within each category
+    test_missense_minority_cap: 1000
+  external:
+    sources: [VKGL, MGeND]
+    majority_ratio: 10
+    missense_minority_cap: 1000
+    # Variants shared with our training partition are removed from TRAINING, not from the cohort.
+    exclude_from_training: true
+  indel:
+    max_length: 50
+    train_balance: 1
+    external_majority_ratio: 10
+
+# --------------------------------------------------------------------------------------------
+# Baseline tools in the comparison tables
+# --------------------------------------------------------------------------------------------
+# `negate` marks a score distributed as higher-is-more-benign. `categories` restricts a dedicated
+# tool to the categories it addresses, so it is neither credited nor charged elsewhere; SpliceAI
+# is left unrestricted because the paper reports it across all categories for completeness and
+# says in the caption that it is a splicing-specific model.
+tools:
+  snv:
+    - {name: cadd,          label: CADD,           negate: false}
+    - {name: gpnmsa,        label: GPN-MSA,        negate: true}
+    - {name: evo2,          label: Evo2,           negate: true}
+    - {name: phylop,        label: phyloP,         negate: false}
+    - {name: gerp,          label: GERP++,         negate: false}
+    - {name: dann,          label: DANN,           negate: false}
+    - {name: phastcons,     label: phastCons,      negate: false}
+    - {name: spliceai,      label: SpliceAI,       negate: false}
+    - {name: revel,         label: REVEL,          negate: false, categories: [missense]}
+    - {name: alphamissense, label: AlphaMissense,  negate: false, categories: [missense]}
+  indel:
+    - {name: evo2,      label: Evo2,      negate: true}
+    - {name: msa_gap,   label: MSA gap,   negate: false}
+    - {name: cadd,      label: CADD,      negate: false}
+    - {name: phylop,    label: phyloP,    negate: false}
+    - {name: gerp,      label: GERP++,    negate: false}
+    - {name: phastcons, label: phastCons, negate: false}
+    - {name: spliceai,  label: SpliceAI,  negate: false}
+
+# --------------------------------------------------------------------------------------------
+# Figure colours
+# --------------------------------------------------------------------------------------------
+# One colour per tool, shared by every figure, so a tool is the same colour wherever it appears.
+# Drawn from the Okabe-Ito colourblind-safe set, in an order validated for adjacent-pair
+# separation under deuteranopia and tritanopia (worst adjacent dE 9.6 deutan, 20.0 normal vision);
+# Okabe-Ito's yellow and black are excluded, the first for contrast against white and the second
+# for having no chroma to separate on.
+#
+# There are more tools than hues, so identity is carried by colour *and* line style: genome-wide
+# tools are drawn as connected lines, tools that score only some categories as isolated points.
+# Colour alone never distinguishes two series.
+palette:
+  # Two groups, one hue sequence. The ensemble and the models inside it are solid; the tools it
+  # is compared against are dashed and repeat the same four hues in the same order, so a hue
+  # names a slot in each group rather than an arbitrary pairing. The two consequence-restricted
+  # tools sit outside both groups and are drawn as yellow points with a black edge.
+  ensemble: "#0072B2"      # blue
+  evo2: "#D55E00"          # red
+  ag_catboost: "#56B4E9"   # light blue
+  gpnmsa: "#009E73"        # green
+  msa_gap: "#8FD9A8"       # light green - the indel stand-in for GPN-MSA, so a lighter shade of its hue
+  cadd: "#0072B2"          # blue
+  phylop: "#D55E00"        # red
+  gerp: "#56B4E9"          # light blue
+  phastcons: "#009E73"     # green
+  dann: "#E69F00"          # orange - beyond the four, no solid counterpart
+  spliceai: "#CC79A7"      # purple - beyond the four, no solid counterpart
+  revel: "#F0E442"         # yellow
+  alphamissense: "#F0E442" # yellow
+  point_edge: "#000000"
+  neutral: "#4d4d4d"
+  grid: "#d9d9d9"
+# Tools drawn as connected lines; everything else is drawn as isolated points.
+genome_wide_tools: [FM Ensemble, AG-CatBoost, CADD, GPN-MSA, Evo2, phyloP, GERP++, phastCons, DANN, SpliceAI, MSA gap]
+# Line style carries one distinction only: solid for the ensemble and the models inside it,
+# dashed for every tool it is compared against. MSA gap is solid because it is what replaces
+# GPN-MSA for indels.
+dashed_tools: [CADD, phyloP, GERP++, phastCons, DANN, SpliceAI]
+
+# Row order in the published tables.
+table_row_order:
+  snv: [FM Ensemble, GPN-MSA, Evo2, AG-CatBoost, CADD, phyloP, GERP++, phastCons, DANN,
+        REVEL, AlphaMissense, SpliceAI]
+  indel: [FM Ensemble, Evo2, AG-CatBoost, MSA gap, CADD, GERP++, phyloP, phastCons, SpliceAI]
+
+# --------------------------------------------------------------------------------------------
+# Metrics
+# --------------------------------------------------------------------------------------------
+metrics:
+  # A (tool, category) cell with fewer than this many scored variants, or only one class, is
+  # reported as absent rather than as a number.
+  min_cell: 20
+  # Macro-AUROC is the unweighted mean over the categories a tool actually scores, so a
+  # missense-only tool is not penalised for the categories it does not address.
+  macro_over: scored_categories
+  bootstrap_iterations: 2000
+  confidence_level: 0.95
+
+# --------------------------------------------------------------------------------------------
+# ACMG/AMP PP3/BP4 calibration (Pejaver et al. 2022)
+# --------------------------------------------------------------------------------------------
+calibration:
+  # Thresholds are fitted on the training out-of-fold predictions. The test set is used only to
+  # validate thresholds that were already fixed, never to choose them.
+  fit_on: train_oof
+  # Pejaver's local likelihood ratio: lr+(s) estimated in an adaptive window around each score
+  # rather than cumulatively, with a one-sided bootstrap margin, so a single lucky window cannot
+  # set a threshold. A tier is awarded only if the conservative bound clears the target for every
+  # score beyond the threshold, not merely at it.
+  min_window: 100          # Pejaver: at least 100 pathogenic and benign variants combined
+  bootstrap_iterations: 1000
+  grid_quantiles: 201
+  # Priors. Missense has a derived prior; no non-missense consequence category does, so those use
+  # Tavtigian's clinical-experience value. The tiers are therefore units of evidence calibrated
+  # against different baselines, which the Methods states explicitly.
+  priors:
+    missense: 0.0441       # Pejaver et al. 2022, rare missense in Mendelian disease genes
+    default: 0.10          # Tavtigian et al., clinical experience
+  # Each rung is the eighth root of the very-strong value at that prior.
+  targets:
+    missense: {Supporting: 2.406, Moderate: 5.790, Strong: 33.53, Very_Strong: 1124.0}
+    default:  {Supporting: 2.08,  Moderate: 4.33,  Strong: 18.7,  Very_Strong: 350.0}

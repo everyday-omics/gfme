@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gfme"
+version = "1.0.0"
+description = "A genomic foundation model ensemble for variant pathogenicity prediction"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { file = "LICENSE" }
+authors = [{ name = "Tom Rabinowitz", email = "tomwitz@gmail.com" }]
+
+dependencies = [
+    "numpy>=2.0",
+    "pandas>=2.2",
+    "pyarrow>=17",
+    "pyyaml>=6.0",
+    "scikit-learn>=1.5",
+    "scipy>=1.13",
+    "catboost>=1.2",
+    "xgboost>=2.1",
+    "lightgbm>=4.3",
+    "matplotlib>=3.9",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8.0"]
+
+[tool.setuptools]
+packages = ["gfme"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
